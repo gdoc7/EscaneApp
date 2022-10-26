@@ -29,12 +29,23 @@ const Main = () => {
     return aux[0];
   };
 
-  const { mutate, data, isLoading, status } = useMutation(
+  const { mutate, data, isLoading, status  , reset} = useMutation(
     ["receipt-scan"],
     receiptScan,
     {
       onSuccess: () => {
-        console.log("Respuesta de servicio:",  data ? parseRecipt(data) :  data );
+        console.log(
+          " Respuesta de servicio : ",
+          data ? parseRecipt(data) : data
+        );
+        // return (
+
+        //   <View style={styles.response}>
+        //   <Text>
+        //     Respuesta de servicio : {data ? parseRecipt(data) : data}{" "}
+        //   </Text>
+        // </View>
+        //   )
       },
     }
   );
@@ -70,6 +81,31 @@ const Main = () => {
 
   if (isLoading) {
     return <Text style={styles.loading}>Escaneando...</Text>;
+  }
+  if (status === "success" && image64) {
+    return (
+      <View style={styles.response}>
+        {data
+          ? Object.keys(parseRecipt(data)).map((key, index) => {
+              return (
+                <Text key={index} style={{ fontSize: 25, fontWeight: "bold" }}>
+                  {key}: {data[key]}{" "}
+                </Text>
+              );
+            })
+          : null}
+
+        <Button
+          icon="retweet"
+          color='#000'
+          onPress={() => {
+            setimage(null);
+            setimage64(null);
+            reset(); 
+          }}
+        />
+      </View>
+    );
   }
 
   return (
@@ -157,5 +193,11 @@ const styles = StyleSheet.create({
     justifyContent: "center",
     fontWeight: "bold",
     fontSize: 50,
+  },
+  response: {
+    flex: 1,
+
+    alignItems: "center",
+    justifyContent: "center",
   },
 });
