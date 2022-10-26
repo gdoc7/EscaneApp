@@ -13,39 +13,36 @@ const Main = () => {
   const [Flash, setFlash] = useState(Camera.Constants.FlashMode.off);
   const cameraRef = useRef(null);
 
-  const parseRecipt = (data) =>{
-    let aux =[];
-    data?.map(receipt =>{
-        return aux.push({
-            merchant: receipt.merchant,
-            nif: receipt.nif,
-            ivaPercent: receipt.ivaPercent,
-            total: receipt.total,
-            amount: receipt.amount,
-            iva: receipt.iva,
-            rows: receipt.rows, 
-        })
-    })
-    return aux;
-  }
+  const parseRecipt = (data) => {
+    let aux = [];
+    Object.keys(data).map(() => {
+      return aux.push({
+        merchant: data["merchant"],
+        nif: data["nif"],
+        ivaPercent: data["ivaPercent"],
+        total: data["total"],
+        amount: data["amount"],
+        iva: data["iva"],
+        rows: data["rows"],
+      });
+    });
+    return aux[0];
+  };
 
-  const { mutateAsync, data, isLoading } = useMutation(
+  const { mutate, data, isLoading, status } = useMutation(
     ["receipt-scan"],
     receiptScan,
     {
       onSuccess: () => {
-        console.log(parseRecipt(data));
+        console.log("Respuesta de servicio:",  data ? parseRecipt(data) :  data );
       },
     }
   );
 
+  console.log("Status peticion:", status);
 
   const saveBase64 = () => {
-    try {
-      mutateAsync({ imageBase64: image64 });
-    } catch (error) {
-      console.log(error);
-    }
+    mutate({ imageBase64: image64 });
   };
 
   const takePicture = async () => {
