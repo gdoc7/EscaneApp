@@ -29,7 +29,7 @@ const Main = () => {
     return aux[0];
   };
 
-  const { mutate, data, isLoading, status  , reset} = useMutation(
+  const { mutate, data, isLoading, status, reset } = useMutation(
     ["receipt-scan"],
     receiptScan,
     {
@@ -38,14 +38,6 @@ const Main = () => {
           " Respuesta de servicio : ",
           data ? parseRecipt(data) : data
         );
-        // return (
-
-        //   <View style={styles.response}>
-        //   <Text>
-        //     Respuesta de servicio : {data ? parseRecipt(data) : data}{" "}
-        //   </Text>
-        // </View>
-        //   )
       },
     }
   );
@@ -88,7 +80,14 @@ const Main = () => {
         {data
           ? Object.keys(parseRecipt(data)).map((key, index) => {
               return (
-                <Text key={index} style={{ fontSize: 25, fontWeight: "bold" }}>
+                <Text
+                  key={index}
+                  style={{
+                    fontSize: 25,
+                    fontWeight: "bold",
+                    paddingBottom: 15,
+                  }}
+                >
                   {key}: {data[key]}{" "}
                 </Text>
               );
@@ -97,11 +96,12 @@ const Main = () => {
 
         <Button
           icon="retweet"
-          color='#000'
+          color="#00f"
+          sizeIcon={35}
           onPress={() => {
             setimage(null);
             setimage64(null);
-            reset(); 
+            reset();
           }}
         />
       </View>

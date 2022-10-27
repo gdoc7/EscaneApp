@@ -2,10 +2,10 @@ import React from "react";
 import { Text, TouchableOpacity, StyleSheet } from "react-native";
 import { Entypo } from "@expo/vector-icons";
 
-const Button = ({ title, onPress, icon, color }) => {
+const Button = ({ title, onPress, icon, color, sizeIcon }) => {
   return (
     <TouchableOpacity onPress={onPress} style={styles.button}>
-      <Entypo name={icon}  size={28} color={color ? color : "#f1f1f1"} />
+      <Entypo name={icon}  size={sizeIcon? sizeIcon :28} color={color ? color : "#f1f1f1"} />
       <Text style={styles.text} >{title}</Text>
     </TouchableOpacity>
   );
