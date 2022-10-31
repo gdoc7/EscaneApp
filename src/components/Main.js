@@ -1,12 +1,19 @@
 import React, { useState, useEffect, useRef } from "react";
-import { StyleSheet, View, Image, Text } from "react-native";
+import {
+  StyleSheet,
+  View,
+  Image,
+  Text,
+  StatusBar,
+  TouchableOpacity,
+} from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import Button from "./Button";
 import { receiptScan } from "../services/reciptServices";
 import { useMutation } from "@tanstack/react-query";
 
 const Main = () => {
-  const [hasCameraPermission, sethasCameraPermission] = useState(null);
+  const [hasCameraPermission, sethasCameraPermission] = Camera.useCameraPermissions();
   const [image, setimage] = useState(null);
   const [image64, setimage64] = useState(null);
   const [type, settype] = useState(CameraType.back);
@@ -17,13 +24,13 @@ const Main = () => {
     let aux = [];
     Object.keys(data).map(() => {
       return aux.push({
-        merchant: data["merchant"],
+        comercio: data["merchant"],
         nif: data["nif"],
         ivaPercent: data["ivaPercent"],
-        total: data["total"],
         amount: data["amount"],
         iva: data["iva"],
-        rows: data["rows"],
+        productos: data["rows"],
+        total: data["total"],
       });
     });
     return aux[0];
@@ -74,36 +81,158 @@ const Main = () => {
   if (isLoading) {
     return <Text style={styles.loading}>Escaneando...</Text>;
   }
-  if (status === "success" && image64) {
-    return (
-      <View style={styles.response}>
-        {data
-          ? Object.keys(parseRecipt(data)).map((key, index) => {
-              return (
-                <Text
-                  key={index}
-                  style={{
-                    fontSize: 25,
-                    fontWeight: "bold",
-                    paddingBottom: 15,
-                  }}
-                >
-                  {key}: {data[key]}{" "}
-                </Text>
-              );
-            })
-          : null}
+  console.log(StatusBar.currentHeight);
 
-        <Button
-          icon="retweet"
-          color="#00f"
-          sizeIcon={35}
-          onPress={() => {
-            setimage(null);
-            setimage64(null);
-            reset();
-          }}
-        />
+  if (status === "success" && image64) {
+    console.log(data);
+    return (
+      <View style={{ flex: 1 }}>
+        <View style={{ alignItems: "center", paddingTop: 55 }}>
+          <Text
+            style={{
+              fontSize: 25,
+              paddingBottom: 25,
+              fontWeight: "bold",
+            }}
+          >
+            {" "}
+            Tu Factura{" "}
+          </Text>
+        </View>
+        <View style={styles.response}>
+          <View
+            style={{
+              borderStyle: "solid",
+              borderWidth: 1,
+              padding: 45,
+              borderColor: "#bab5b5",
+              minWidth: "80%",
+            }}
+          >
+            {data
+              ? Object.keys(parseRecipt(data)).map((key, index) => {
+                  return (
+                    <View key={index}>
+                      {key === "comercio" ? (
+                        <Text
+                          style={{
+                            fontSize: 15,
+                            paddingBottom: 25,
+                            fontWeight: "bold",
+                          }}
+                        >
+                          {data[key] ? data[key] : "Comercio"}
+                        </Text>
+                      ) : (
+                        <>
+                          {key === "total" ? (
+                            <View
+                              style={{
+                                borderBottomColor: "black",
+                                borderTopColor: "black",
+                                borderTopWidth: 3,
+                                borderBottomWidth: 3,
+                                marginVertical: 10,
+                              }}
+                            >
+                              <View
+                                style={{
+                                  flexDirection: "row",
+                                  justifyContent: "space-between",
+                                }}
+                              >
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    paddingVertical: 15,
+                                    fontWeight: "bold",
+                                  }}
+                                >
+                                  {key}
+                                </Text>
+
+                                <Text
+                                  style={{
+                                    fontSize: 15,
+                                    paddingVertical: 15,
+                                  }}
+                                >
+                                  {data[key]}
+                                </Text>
+                              </View>
+                            </View>
+                          ) : (
+                            <View
+                              style={{
+                                flexDirection: "row",
+                                justifyContent: "space-between",
+                              }}
+                            >
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  paddingVertical: 15,
+                                  fontWeight: "bold",
+                                }}
+                              >
+                                {key}
+                              </Text>
+
+                              <Text
+                                style={{
+                                  fontSize: 15,
+                                  paddingVertical: 15,
+                                }}
+                              >
+                                {data[key]}
+                              </Text>
+                            </View>
+                          )}
+
+                          <View
+                            style={{
+                              borderBottomColor: "black",
+
+                              borderBottomWidth: StyleSheet.hairlineWidth,
+                            }}
+                          />
+                        </>
+                      )}
+                    </View>
+                  );
+                })
+              : null}
+          </View>
+          <View
+            style={{
+              position: "absolute",
+              bottom: 0,
+              paddingVertical: 20,
+              backgroundColor: "#5477eb",
+              width: "100%",
+              alignItems: "center",
+            }}
+          >
+            <TouchableOpacity
+              onPress={() => {
+                setimage(null);
+                setimage64(null);
+                reset();
+              }}
+            >
+              <Text
+                style={{
+                  fontSize: 25,
+                  paddingVertical: 15,
+                  fontWeight: "bold",
+                  color: "white",
+                }}
+              >
+                Volver a escanear
+              </Text>
+            </TouchableOpacity>
+          </View>
+        </View>
       </View>
     );
   }
@@ -183,7 +312,6 @@ const styles = StyleSheet.create({
   },
   topButtonsContainer: {
     flexDirection: "row",
-    justifyContent: "end",
     padding: 45,
   },
   loading: {
@@ -196,8 +324,7 @@ const styles = StyleSheet.create({
   },
   response: {
     flex: 1,
-
     alignItems: "center",
-    justifyContent: "center",
+    paddingTop: 55,
   },
 });

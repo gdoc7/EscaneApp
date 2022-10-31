@@ -1,5 +1,5 @@
 import React from "react";
-import 'expo-dev-client';
+
 import { QueryClientProvider } from "@tanstack/react-query";
 import Main from "./src/components/Main";
 import { queryClient } from "./src/services/queryClient";
