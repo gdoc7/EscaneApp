@@ -7,6 +7,7 @@ import {
   StatusBar,
   TouchableOpacity,
   ActivityIndicator,
+  ScrollView,
 } from "react-native";
 import { Camera, CameraType } from "expo-camera";
 import Button from "./Button";
@@ -61,7 +62,9 @@ const Main = () => {
   if (isLoading) {
     return (
       <View style={styles.loading}>
-        <Text style={{ fontWeight: "bold", fontSize: 40 , paddingBottom: 20}}>Escaneando...</Text>
+        <Text style={{ fontWeight: "bold", fontSize: 40, paddingBottom: 20 }}>
+          Escaneando...
+        </Text>
         <ActivityIndicator size="large" color="blue" />
       </View>
     );
@@ -69,51 +72,49 @@ const Main = () => {
 
   if (status === "success" && image64) {
     return (
-      <View style={{ flex: 1 }}>
+      <View style={{ flex: 1 , justifyContent:'space-between'}}>
         <View style={{ alignItems: "center", paddingTop: 55 }}>
           <Text
             style={{
               fontSize: 25,
-              paddingBottom: 25,
               fontWeight: "bold",
             }}
           >
             Tu Factura
           </Text>
         </View>
-        <View style={styles.response}>
-          {!showJSON ? (
-            <View>
-              <Receipt data={data} />
-              <Button
-                title={"Mostrar en formato JSON"}
-                icon="code"
-                color="black"
-                colorText="black"
-                onPress={() => {
-                  setshowJSON(true);
-                }}
-              />
-            </View>
-          ) : (
-            <View>
-              <Text> {JSON.stringify(data, null, 2)}</Text>
-              <Button
-                title={"Mostrar factura"}
-                icon="back"
-                color="black"
-                colorText="black"
-                onPress={() => {
-                  setshowJSON(false);
-                }}
-              />
-            </View>
-          )}
-
+        <View style={{flex:1}}>
+          <ScrollView contentContainerStyle={styles.response}>
+            {!showJSON ? (
+              <View>
+                <Receipt data={data} />
+                <Button
+                  title={"Mostrar en formato JSON"}
+                  icon="code"
+                  color="black"
+                  colorText="black"
+                  onPress={() => {
+                    setshowJSON(true);
+                  }}
+                />
+              </View>
+            ) : (
+              <View>
+                <Text style={{lineHeight:20, paddingBottom:20}}> {JSON.stringify(data, null, 2)}</Text>
+                <Button
+                  title={"Mostrar factura"}
+                  icon="back"
+                  color="black"
+                  colorText="black"
+                  onPress={() => {
+                    setshowJSON(false);
+                  }}
+                />
+              </View>
+            )}
+          </ScrollView>
           <View
             style={{
-              position: "absolute",
-              bottom: 0,
               paddingVertical: 20,
               backgroundColor: "#5477eb",
               width: "100%",
@@ -130,7 +131,6 @@ const Main = () => {
               <Text
                 style={{
                   fontSize: 25,
-                  paddingVertical: 15,
                   fontWeight: "bold",
                   color: "white",
                 }}
@@ -214,7 +214,6 @@ const styles = StyleSheet.create({
   buttonsContainer: {
     flexDirection: "row",
     justifyContent: "space-between",
-    justifyContent: "space-between",
     paddingHorizontal: 50,
   },
   topButtonsContainer: {
@@ -223,12 +222,10 @@ const styles = StyleSheet.create({
   },
   loading: {
     flex: 1,
-   
     alignItems: "center",
     justifyContent: "center",
   },
   response: {
-    flex: 1,
     alignItems: "center",
     paddingTop: 55,
   },

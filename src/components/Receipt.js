@@ -23,6 +23,7 @@ const Receipt = ({ data }) => {
         borderStyle: "solid",
         borderWidth: 1,
         padding: 45,
+        marginBottom:20,
         borderColor: "#bab5b5",
         minWidth: "80%",
       }}
